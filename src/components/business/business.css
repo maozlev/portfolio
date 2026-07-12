@@ -1,0 +1,220 @@
+.view--map {
+  position: fixed;
+  inset: 0;
+  background: #141416;
+}
+
+/* ---------- Node labels (rendered via drei Html) ---------- */
+.node-label {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #f4f6fa;
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 100px;
+  background: rgba(8, 8, 10, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  user-select: none;
+}
+
+.node-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--c);
+  box-shadow: 0 0 10px 1px var(--c);
+}
+
+.node-label.is-hover {
+  transform: translateY(-4px);
+  border-color: var(--c);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 22px -4px var(--c);
+}
+
+/* ---------- Map DOM overlay ---------- */
+.map-ui {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  padding: clamp(20px, 3vw, 40px);
+}
+
+.map-ui button {
+  pointer-events: auto;
+}
+
+.map-back {
+  position: absolute;
+  top: clamp(20px, 3vw, 40px);
+  left: clamp(20px, 3vw, 40px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: 42px;
+  padding: 0 18px 0 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 10, 12, 0.55);
+  color: var(--muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+.map-back:hover {
+  color: var(--fg);
+  border-color: rgba(102, 230, 255, 0.5);
+  box-shadow: 0 0 18px rgba(102, 230, 255, 0.18);
+}
+
+.map-head {
+  animation: fade-down 0.9s 0.1s both ease-out;
+}
+
+.map-eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.map-title {
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.map-sub {
+  font-family: 'Inter', sans-serif;
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 12px;
+  max-width: 320px;
+}
+
+.map-controls {
+  position: absolute;
+  top: clamp(20px, 3vw, 40px);
+  right: clamp(20px, 3vw, 40px);
+  display: flex;
+  gap: 10px;
+}
+
+.map-hint {
+  position: absolute;
+  left: clamp(20px, 3vw, 40px);
+  bottom: clamp(20px, 3vw, 40px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  animation: fade-up 1s 0.6s both ease-out;
+}
+
+/* ---------- Placeholder section ---------- */
+.section {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(120% 120% at 20% 0%, #17171b 0%, #08080a 60%);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 4vw, 56px);
+  overflow: hidden;
+}
+
+.section-glow {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, var(--c), transparent 65%);
+  opacity: 0.18;
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.section-nav {
+  display: flex;
+  gap: 12px;
+  z-index: 2;
+}
+
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+}
+
+.ghost-btn:hover {
+  border-color: var(--c);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.section-body {
+  margin: auto 0;
+  max-width: 640px;
+  z-index: 2;
+  animation: fade-up 0.9s 0.1s both ease-out;
+}
+
+.section-eyebrow {
+  color: var(--c);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(44px, 8vw, 96px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  margin-bottom: 20px;
+}
+
+.section-tag {
+  font-size: clamp(18px, 2vw, 24px);
+  color: #cfd5df;
+  margin-bottom: 28px;
+}
+
+.section-soon {
+  font-family: 'Inter', sans-serif;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 460px;
+}
