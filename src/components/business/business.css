@@ -136,7 +136,9 @@
 .section {
   position: fixed;
   inset: 0;
-  background: radial-gradient(120% 120% at 20% 0%, #17171b 0%, #08080a 60%);
+  background:
+    linear-gradient(rgba(7, 9, 14, 0.85), rgba(7, 9, 14, 0.93)),
+    url('/bg.jpg') center / cover no-repeat;
   display: flex;
   flex-direction: column;
   padding: clamp(24px, 4vw, 56px);

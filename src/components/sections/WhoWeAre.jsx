@@ -1,8 +1,9 @@
 import * as THREE from 'three'
-import { useMemo, useRef, useState } from 'react'
+import { Suspense, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Image } from '@react-three/drei'
 import { makeTileDataURL } from './tiles.js'
+import Background3D from '../Background3D.jsx'
 import './sections.css'
 
 // Only the two founders. Swap `img` for a real photo path later
@@ -87,6 +88,9 @@ export default function WhoWeAre({ onBack, onHome }) {
         onPointerMissed={() => setClicked(null)}
       >
         <color attach="background" args={['#0a0b10']} />
+        <Suspense fallback={null}>
+          <Background3D intensity={0.4} />
+        </Suspense>
         {urls.map((url, i) => (
           <Card
             key={i}

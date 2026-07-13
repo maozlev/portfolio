@@ -73,15 +73,16 @@ export default function Overlay({ onNavigate }) {
 
       {/* Hero copy */}
       <main className="hero">
-        <p className="eyebrow">AI SOLUTIONS FOR INDUSTRY</p>
+        <p className="eyebrow">AI SOLUTIONS FOR EVERY BUSINESS</p>
         <h1 className="headline">
-          <span className="line">We make</span>
-          <span className="line">factories <em>think.</em></span>
+          <span className="line">We make your business</span>
+          <span className="line"><em>work smarter.</em></span>
         </h1>
         <p className="sub">
-          Simon Danilov &amp; Maoz Lev build AI systems that turn industrial
-          operations into measurable output — less downtime, less waste,
-          more done. We take you from idea to a running process, end to end.
+          Simon Danilov &amp; Maoz Lev bring AI into the way you already work —
+          gently optimizing your workflows so your team does more with less
+          effort, and your business runs at its most productive. We&apos;re with
+          you every step, from first idea to a running system.
         </p>
 
         <div className="cta">

@@ -1,20 +1,23 @@
 import * as THREE from 'three'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useCursor, AdaptiveEvents } from '@react-three/drei'
+import { useCursor, AdaptiveEvents, Environment, Lightformer } from '@react-three/drei'
 import { makeTileTexture } from '../sections/tiles.js'
+import Laptop from './Laptop.jsx'
+import Background3D from '../Background3D.jsx'
 import './fan.css'
 
 const PHI = 1.61803398875
-const A = Math.PI / 2.5 // steep side angle
 const SCALE = 1.12
+const FRAME_SHIFT = 0.7 // slide the whole wall right to make room for the laptop
 
+// Symmetric arc, evenly spaced left→right, centre prominent.
 const FRAMES = [
-  { id: 'what', label: 'Our Expertise', tone: 'cyan', icon: 'gear', pos: [0, 0, 1.5], rot: [0, 0, 0] },
-  { id: 'who', label: 'Who We Are', tone: 'blue', icon: 'people', pos: [-1.75, 0, 0.25], rot: [0, A, 0] },
-  { id: 'use-cases', label: 'Use Cases', tone: 'gold', icon: 'layers', pos: [1.75, 0, 0.25], rot: [0, -A, 0] },
-  { id: 'partners', label: 'Partners', tone: 'silver', icon: 'handshake', pos: [-2.15, 0, 1.5], rot: [0, A, 0] },
-  { id: 'contact', label: 'Contact', tone: 'steel', icon: 'mail', pos: [2.15, 0, 1.5], rot: [0, -A, 0] },
+  { id: 'partners', label: 'Partners', tone: 'silver', icon: 'handshake', pos: [-2.7, 0, -1.4], rot: [0, 0.9, 0] },
+  { id: 'who', label: 'Who We Are', tone: 'blue', icon: 'people', pos: [-1.35, 0, -0.55], rot: [0, 0.45, 0] },
+  { id: 'what', label: 'Our Expertise', tone: 'cyan', icon: 'gear', pos: [0, 0, 0], rot: [0, 0, 0] },
+  { id: 'use-cases', label: 'Use Cases', tone: 'gold', icon: 'layers', pos: [1.35, 0, -0.55], rot: [0, -0.45, 0] },
+  { id: 'contact', label: 'Contact', tone: 'steel', icon: 'mail', pos: [2.7, 0, -1.4], rot: [0, -0.9, 0] },
 ]
 const REAL_IDS = new Set(FRAMES.map((f) => f.id))
 
@@ -73,6 +76,26 @@ function Frame({ data, tex, selectedId, hovered, setHovered }) {
   )
 }
 
+// Static, non-interactive, double-sided copy used for the mirrored reflection.
+function ReflFrame({ data, tex }) {
+  return (
+    <group position={data.pos} rotation={data.rot} scale={SCALE}>
+      <mesh raycast={() => null} scale={[1, PHI, 0.05]} position={[0, PHI / 2, 0]}>
+        <boxGeometry />
+        <meshBasicMaterial color="#0e0e10" toneMapped={false} side={THREE.DoubleSide} />
+        <mesh raycast={() => null} scale={[0.92, 0.94, 0.9]} position={[0, 0, 0.2]}>
+          <boxGeometry />
+          <meshBasicMaterial color="#f4f4f4" toneMapped={false} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh raycast={() => null} position={[0, 0, 0.7]} scale={[0.86, 0.92, 1]}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial map={tex} toneMapped={false} side={THREE.DoubleSide} />
+        </mesh>
+      </mesh>
+    </group>
+  )
+}
+
 function Gallery({ textures, selectedId, onPick }) {
   const group = useRef()
   const [hovered, setHovered] = useState(null)
@@ -100,13 +123,23 @@ function Gallery({ textures, selectedId, onPick }) {
 
   return (
     <group ref={group} position={[0, -0.5, 0]} onClick={(e) => (e.stopPropagation(), onPick(e.object.name))}>
-      {FRAMES.map((data, i) => (
-        <Frame key={data.id} data={data} tex={textures[i]} selectedId={selectedId} hovered={hovered} setHovered={setHovered} />
-      ))}
-      {/* flat dark floor — fog fades it toward the horizon, no reflection cost */}
+      <group position={[FRAME_SHIFT, 0, 0]}>
+        {FRAMES.map((data, i) => (
+          <Frame key={data.id} data={data} tex={textures[i]} selectedId={selectedId} hovered={hovered} setHovered={setHovered} />
+        ))}
+
+        {/* mirrored reflection below the floor (cheap — just flipped geometry) */}
+        <group scale={[1, -1, 1]}>
+          {FRAMES.map((data, i) => (
+            <ReflFrame key={`r-${data.id}`} data={data} tex={textures[i]} />
+          ))}
+        </group>
+      </group>
+
+      {/* translucent floor — high opacity leaves only a faint, gentle reflection */}
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[60, 60]} />
-        <meshBasicMaterial color="#050506" toneMapped={false} />
+        <meshBasicMaterial color="#0a0b0e" transparent opacity={0.88} depthWrite={false} toneMapped={false} />
       </mesh>
     </group>
   )
@@ -115,7 +148,7 @@ function Gallery({ textures, selectedId, onPick }) {
 export default function BusinessMap({ onNavigate, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [navigating, setNavigating] = useState(false)
-  const textures = useMemo(() => FRAMES.map((f) => makeTileTexture({ kind: 'theme', label: f.label, tone: f.tone })), [])
+  const textures = useMemo(() => FRAMES.map((f) => makeTileTexture({ kind: 'theme', label: f.label, tone: f.tone, icon: f.icon })), [])
 
   const onPick = (id) => {
     if (navigating || !REAL_IDS.has(id)) return
@@ -127,12 +160,19 @@ export default function BusinessMap({ onNavigate, onClose }) {
   return (
     <div className="carousel-stage">
       <Canvas dpr={1} camera={{ fov: 70, position: [0, 2, 15] }} gl={{ antialias: false, powerPreference: 'high-performance' }}>
-        <color attach="background" args={['#16171c']} />
-        <fog attach="fog" args={['#16171c', 4, 18]} />
+        <fog attach="fog" args={['#0c0d12', 8, 22]} />
 
         <Suspense fallback={null}>
+          <Background3D intensity={0.5} />
           <Gallery textures={textures} selectedId={selectedId} onPick={onPick} />
         </Suspense>
+
+        {/* 3D laptop accent — on the left, sibling of the gallery so it never blocks a frame click */}
+        <Laptop position={[-2, -0.25, 2.6]} scale={0.14} rotation={[0, 0.5, 0]} />
+        <Environment resolution={128} environmentIntensity={0.7}>
+          <Lightformer intensity={1.6} color="#ffffff" position={[0, 4, 4]} scale={[8, 5, 1]} />
+          <Lightformer intensity={0.7} color="#88aaff" position={[-5, 2, 3]} scale={[4, 4, 1]} />
+        </Environment>
 
         <AdaptiveEvents />
       </Canvas>

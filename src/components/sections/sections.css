@@ -2,7 +2,9 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: radial-gradient(130% 120% at 15% 0%, #10141d 0%, #090b12 55%, #05060a 100%);
+  background:
+    linear-gradient(rgba(7, 9, 14, 0.84), rgba(7, 9, 14, 0.93)),
+    url('/bg.jpg') center / cover no-repeat;
   font-family: 'Space Grotesk', 'Inter', sans-serif;
 }
 
