@@ -4,6 +4,7 @@ import BusinessMap from './components/business/BusinessMap.jsx'
 import Section from './components/business/Section.jsx'
 import WhoWeAre from './components/sections/WhoWeAre.jsx'
 import UseCases from './components/sections/UseCases.jsx'
+import Contact from './components/sections/Contact.jsx'
 
 const SECTION_IDS = ['who', 'what', 'use-cases', 'partners', 'process', 'contact']
 
@@ -24,7 +25,10 @@ export default function App() {
       {view === 'use-cases' && (
         <UseCases onBack={() => setView('map')} onHome={() => setView('hero')} />
       )}
-      {isSection && view !== 'who' && view !== 'use-cases' && (
+      {view === 'contact' && (
+        <Contact onBack={() => setView('map')} onHome={() => setView('hero')} />
+      )}
+      {isSection && view !== 'who' && view !== 'use-cases' && view !== 'contact' && (
         <Section
           id={view}
           onBack={() => setView('map')}

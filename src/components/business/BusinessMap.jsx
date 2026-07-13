@@ -10,7 +10,7 @@ import { useIsMobile } from '../../hooks.js'
 import './fan.css'
 
 const PHI = 1.61803398875
-const SCALE = 1.12
+const SCALE = 1.3 // frame size (bigger = easier to read labels), camera stays put
 const FRAME_SHIFT = 0.7 // slide the whole wall right to make room for the laptop
 
 // Symmetric arc, evenly spaced left→right, centre prominent.
@@ -104,8 +104,7 @@ function Gallery({ textures, selectedId, onPick, mobile }) {
   useCursor(hovered !== null)
 
   // On phones: centre the wall and pull the camera back so all frames fit.
-  // On desktop: sit closer so the labels are easy to read.
-  const home = mobile ? [0, 0.2, 6.6] : [0, 0.25, 3.7]
+  const home = mobile ? [0, 0.2, 6.6] : [0, 0.25, 4.6]
   const p = useRef(new THREE.Vector3(home[0], home[1], home[2]))
   const q = useRef(new THREE.Quaternion())
 

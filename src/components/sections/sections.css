@@ -297,6 +297,69 @@
   animation: sec-up 0.9s 0.6s both ease-out;
 }
 
+/* ---------- Contact CTA ---------- */
+.contact-cta {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  padding: 30px 34px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(102, 230, 255, 0.12), rgba(43, 143, 176, 0.06));
+  border: 1px solid rgba(102, 230, 255, 0.25);
+  animation: sec-up 0.9s 0.55s both ease-out;
+}
+.cta-title {
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.cta-sub {
+  font-family: 'Inter', sans-serif;
+  color: #b9c0cc;
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 420px;
+}
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 28px;
+  border-radius: 100px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #04141a;
+  background: linear-gradient(120deg, #7fe9ff, #35b6dd);
+  box-shadow: 0 8px 30px rgba(53, 182, 221, 0.35);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(102, 230, 255, 0.5);
+}
+.cta-mail {
+  color: var(--accent);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  opacity: 0.85;
+}
+.cta-mail:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Horizontal tiles (Who We Are) ---------- */
 .tiles-sec {
   background: #0a0b10;
