@@ -8,6 +8,18 @@
   font-family: 'Space Grotesk', 'Inter', sans-serif;
 }
 
+/* Scrollable variant (mobile content pages) */
+.sec--scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.sec--scroll .sec-body {
+  justify-content: flex-start;
+  min-height: 100%;
+  padding-top: 84px;
+  padding-bottom: 48px;
+}
+
 /* Decorative ambient glow */
 .sec-decor {
   position: absolute;

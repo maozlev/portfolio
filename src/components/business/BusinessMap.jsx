@@ -5,6 +5,7 @@ import { useCursor, AdaptiveEvents, Environment, Lightformer } from '@react-thre
 import { makeTileTexture } from '../sections/tiles.js'
 import Laptop from './Laptop.jsx'
 import Background3D from '../Background3D.jsx'
+import MobileMenu from './MobileMenu.jsx'
 import { useIsMobile } from '../../hooks.js'
 import './fan.css'
 
@@ -103,7 +104,8 @@ function Gallery({ textures, selectedId, onPick, mobile }) {
   useCursor(hovered !== null)
 
   // On phones: centre the wall and pull the camera back so all frames fit.
-  const home = mobile ? [0, 0.2, 6.6] : [0, 0.25, 4.6]
+  // On desktop: sit closer so the labels are easy to read.
+  const home = mobile ? [0, 0.2, 6.6] : [0, 0.25, 3.7]
   const p = useRef(new THREE.Vector3(home[0], home[1], home[2]))
   const q = useRef(new THREE.Quaternion())
 
@@ -153,7 +155,7 @@ export default function BusinessMap({ onNavigate, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [navigating, setNavigating] = useState(false)
   const mobile = useIsMobile()
-  const textures = useMemo(() => FRAMES.map((f) => makeTileTexture({ kind: 'theme', label: f.label, tone: f.tone, icon: f.icon })), [])
+  const textures = useMemo(() => (mobile ? [] : FRAMES.map((f) => makeTileTexture({ kind: 'theme', label: f.label, tone: f.tone, icon: f.icon }))), [mobile])
 
   const onPick = (id) => {
     if (navigating || !REAL_IDS.has(id)) return
@@ -161,6 +163,8 @@ export default function BusinessMap({ onNavigate, onClose }) {
     setNavigating(true)
     setTimeout(() => onNavigate(id), 720)
   }
+
+  if (mobile) return <MobileMenu onNavigate={onNavigate} onClose={onClose} />
 
   return (
     <div className="carousel-stage">
