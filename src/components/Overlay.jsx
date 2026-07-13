@@ -1,53 +1,13 @@
-import { useEffect, useState } from 'react'
 import './overlay.css'
 
-function ResetIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M4 4v5h5" strokeLinecap="round" strokeLinejoin="round" />
-      <path
-        d="M4.6 14a8 8 0 1 0 1-6.3L4 9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function FullscreenIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6">
-      <path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 export default function Overlay({ onNavigate }) {
-  const [replayKey, setReplayKey] = useState(0)
-
   const go = (id) => (e) => {
     e.preventDefault()
     onNavigate?.(id)
   }
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.()
-    else document.exitFullscreen?.()
-  }
-
-  const replayIntro = () => setReplayKey((k) => k + 1)
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key.toLowerCase() === 'f') toggleFullscreen()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
   return (
-    <div className="overlay" key={replayKey}>
+    <div className="overlay">
       {/* Top bar */}
       <header className="topbar">
         <div className="brand">
@@ -60,15 +20,6 @@ export default function Overlay({ onNavigate }) {
           <a href="#approach" onClick={go('map')}>Approach</a>
           <a href="#contact" onClick={go('contact')}>Contact</a>
         </nav>
-
-        <div className="controls">
-          <button className="ctrl" onClick={replayIntro} title="Replay intro" aria-label="Replay intro">
-            <ResetIcon />
-          </button>
-          <button className="ctrl" onClick={toggleFullscreen} title="Fullscreen (F)" aria-label="Fullscreen">
-            <FullscreenIcon />
-          </button>
-        </div>
       </header>
 
       {/* Hero copy */}
