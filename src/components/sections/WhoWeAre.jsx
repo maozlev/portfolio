@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import { Suspense, useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Image } from '@react-three/drei'
 import { makeTileDataURL } from './tiles.js'
 import Background3D from '../Background3D.jsx'
@@ -75,6 +75,17 @@ function Card({ index, url, baseX, clicked, setClicked }) {
   )
 }
 
+// Pulls the camera back on narrow/portrait screens so both cards stay in frame.
+function ResponsiveCamera({ portraitZ, landscapeZ }) {
+  const { camera, size } = useThree()
+  useEffect(() => {
+    const portrait = size.width < 768 || size.width < size.height
+    camera.position.z = portrait ? portraitZ : landscapeZ
+    camera.updateProjectionMatrix()
+  }, [camera, size.width, size.height, portraitZ, landscapeZ])
+  return null
+}
+
 export default function WhoWeAre({ onBack, onHome }) {
   const [clicked, setClicked] = useState(null)
   const urls = useMemo(() => ITEMS.map((it) => it.img || makeTileDataURL(it)), [])
@@ -88,6 +99,7 @@ export default function WhoWeAre({ onBack, onHome }) {
         onPointerMissed={() => setClicked(null)}
       >
         <color attach="background" args={['#0a0b10']} />
+        <ResponsiveCamera portraitZ={9.5} landscapeZ={6.5} />
         <Suspense fallback={null}>
           <Background3D intensity={0.4} />
         </Suspense>

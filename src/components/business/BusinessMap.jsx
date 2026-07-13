@@ -5,6 +5,7 @@ import { useCursor, AdaptiveEvents, Environment, Lightformer } from '@react-thre
 import { makeTileTexture } from '../sections/tiles.js'
 import Laptop from './Laptop.jsx'
 import Background3D from '../Background3D.jsx'
+import { useIsMobile } from '../../hooks.js'
 import './fan.css'
 
 const PHI = 1.61803398875
@@ -96,12 +97,14 @@ function ReflFrame({ data, tex }) {
   )
 }
 
-function Gallery({ textures, selectedId, onPick }) {
+function Gallery({ textures, selectedId, onPick, mobile }) {
   const group = useRef()
   const [hovered, setHovered] = useState(null)
   useCursor(hovered !== null)
 
-  const p = useRef(new THREE.Vector3(0, 0.25, 4.6))
+  // On phones: centre the wall and pull the camera back so all frames fit.
+  const home = mobile ? [0, 0.2, 6.6] : [0, 0.25, 4.6]
+  const p = useRef(new THREE.Vector3(home[0], home[1], home[2]))
   const q = useRef(new THREE.Quaternion())
 
   useEffect(() => {
@@ -111,10 +114,11 @@ function Gallery({ textures, selectedId, onPick }) {
       obj.parent.localToWorld(p.current.set(0, PHI / 2, 1.25))
       obj.parent.getWorldQuaternion(q.current)
     } else {
-      p.current.set(0, 0.25, 4.6)
+      p.current.set(home[0], home[1], home[2])
       q.current.identity()
     }
-  }, [selectedId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId, mobile])
 
   useFrame((state, dt) => {
     damp3(state.camera.position, p.current.x, p.current.y, p.current.z, 2.6, dt)
@@ -123,7 +127,7 @@ function Gallery({ textures, selectedId, onPick }) {
 
   return (
     <group ref={group} position={[0, -0.5, 0]} onClick={(e) => (e.stopPropagation(), onPick(e.object.name))}>
-      <group position={[FRAME_SHIFT, 0, 0]}>
+      <group position={mobile ? [0, 0, 0] : [FRAME_SHIFT, 0, 0]} scale={mobile ? 0.72 : 1}>
         {FRAMES.map((data, i) => (
           <Frame key={data.id} data={data} tex={textures[i]} selectedId={selectedId} hovered={hovered} setHovered={setHovered} />
         ))}
@@ -148,6 +152,7 @@ function Gallery({ textures, selectedId, onPick }) {
 export default function BusinessMap({ onNavigate, onClose }) {
   const [selectedId, setSelectedId] = useState(null)
   const [navigating, setNavigating] = useState(false)
+  const mobile = useIsMobile()
   const textures = useMemo(() => FRAMES.map((f) => makeTileTexture({ kind: 'theme', label: f.label, tone: f.tone, icon: f.icon })), [])
 
   const onPick = (id) => {
@@ -164,11 +169,11 @@ export default function BusinessMap({ onNavigate, onClose }) {
 
         <Suspense fallback={null}>
           <Background3D intensity={0.5} />
-          <Gallery textures={textures} selectedId={selectedId} onPick={onPick} />
+          <Gallery textures={textures} selectedId={selectedId} onPick={onPick} mobile={mobile} />
         </Suspense>
 
-        {/* 3D laptop accent — on the left, sibling of the gallery so it never blocks a frame click */}
-        <Laptop position={[-2, -0.25, 2.6]} scale={0.14} rotation={[0, 0.5, 0]} />
+        {/* 3D laptop accent — hidden on phones (no room); never blocks a frame click */}
+        {!mobile && <Laptop position={[-2, -0.25, 2.6]} scale={0.14} rotation={[0, 0.5, 0]} />}
         <Environment resolution={128} environmentIntensity={0.7}>
           <Lightformer intensity={1.6} color="#ffffff" position={[0, 4, 4]} scale={[8, 5, 1]} />
           <Lightformer intensity={0.7} color="#88aaff" position={[-5, 2, 3]} scale={[4, 4, 1]} />

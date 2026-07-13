@@ -168,6 +168,24 @@
 
 @media (max-width: 620px) {
   .people { flex-direction: column; }
+  .person-card { min-width: 0; width: 100%; }
+
+  /* Use Cases */
+  .uc-inner { padding: 92px 20px 48px; }
+  .uc-head { margin-bottom: 28px; }
+  .uc-grid { grid-template-columns: 1fr; gap: 14px; }
+  .uc-card { padding: 22px 20px; }
+  .uc-foot { margin-top: 28px; }
+
+  /* Who We Are overlay */
+  .tiles-head { top: 20px; left: 20px; right: 20px; }
+  .tiles-title { font-size: clamp(24px, 8vw, 40px); max-width: 100%; }
+
+  /* nav buttons sit clear of content */
+  .sec-nav { top: 16px; left: 16px; }
+
+  /* Placeholder / generic section */
+  .section-title { font-size: clamp(34px, 11vw, 60px); }
 }
 
 /* ---------- Use Cases ---------- */
