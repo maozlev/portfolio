@@ -164,7 +164,7 @@ export default function BusinessMap({ onNavigate, onClose }) {
 
   return (
     <div className="carousel-stage">
-      <Canvas dpr={1} camera={{ fov: 70, position: [0, 2, 15] }} gl={{ antialias: false, powerPreference: 'high-performance' }}>
+      <Canvas dpr={mobile ? [1, 2] : 1} camera={{ fov: 70, position: [0, 2, 15] }} gl={{ antialias: mobile, powerPreference: 'high-performance' }}>
         <fog attach="fog" args={['#0c0d12', 8, 22]} />
 
         <Suspense fallback={null}>
